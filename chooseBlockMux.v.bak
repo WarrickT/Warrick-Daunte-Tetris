@@ -1,0 +1,14 @@
+module chooseBlockMux(A, B, S, out);
+	input [3:0] A, B;
+	input S;
+	output [3:0] out;
+	
+	always@(*)
+		begin
+			if(s == 1)
+				out = A;
+			else
+				out = B;
+		end
+endmodule
+
