@@ -26,7 +26,7 @@ module tetris(
 // Inputs
 input				CLOCK_50;
 input		[3:0]	KEY;
-input		[4:0] SW;
+input		[8:0] SW;
 
 // Bidirectionals
 inout				PS2_CLK;
@@ -137,6 +137,7 @@ Hexadecimal_To_Seven_Segment Segment1 (
  
  //assigning values through keyboard for Quartus
  
+ 
  assign start = (last_data_received == 8'b01011010);//enter
  assign gameover = (last_data_received == 8'b01100110); //backspace
  assign Easy = (last_data_received == 8'b00010110); //1
@@ -155,6 +156,10 @@ Hexadecimal_To_Seven_Segment Segment1 (
  assign Easy = SW[2];
  assign Medium = SW[3];
  assign Hard = SW[4];
+ assign left = SW[5];
+ assign right = SW[6];
+ assign down = SW[7]; 
+ assign rotate = SW[8];
  */
  
  //counters 
