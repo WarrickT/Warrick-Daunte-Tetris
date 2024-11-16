@@ -142,7 +142,7 @@ Hexadecimal_To_Seven_Segment Segment1 (
  assign Easy = (last_data_received == 8'b00010110); //1
  assign Medium = (last_data_received == 8'b00011110); //2
  assign Hard = (last_data_received == 8'b00100110); //3
- assign left = (last_data_received == 8'b00011100)|; //A
+ assign left = (last_data_received == 8'b00011100); //A
  assign right = (last_data_received == 8'b00100011); //D
  assign down = (last_data_received == 8'b00011011); // S
  assign rotate = (last_data_received == 8'b00011101); //W
