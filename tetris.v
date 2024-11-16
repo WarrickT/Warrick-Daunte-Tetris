@@ -142,10 +142,10 @@ Hexadecimal_To_Seven_Segment Segment1 (
  assign Easy = (last_data_received == 8'b00010110); //1
  assign Medium = (last_data_received == 8'b00011110); //2
  assign Hard = (last_data_received == 8'b00100110); //3
- assign left = (last_data_received == 8'b00011100)|(last_data_received == 8'b01101011); //left arrow or A
- assign right = (last_data_received == 8'b00100011)|(last_data_received == 8'b01110100); //right arrow or D
- assign down = (last_data_received == 8'b00011011)|(last_data_received == 8'b01110010); // down arrow or S
- assign rotate = (last_data_received == 8'b00011101)|(last_data_received == 8'b01110101);// up arrow or W
+ assign left = (last_data_received == 8'b00011100)|; //A
+ assign right = (last_data_received == 8'b00100011); //D
+ assign down = (last_data_received == 8'b00011011); // S
+ assign rotate = (last_data_received == 8'b00011101); //W
  
  
  //assigning values through switches for modelsim
