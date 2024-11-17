@@ -286,7 +286,7 @@ wire Resetn, start, gameover;
 	 backgroundCount U3 (CLOCK_50, KEY[0], EBackgroundx, X_MAX, XB);    // column counter
         defparam U3.n = 8;
     // enable XC when VGA plotting starts
-    regn U5 (1'b1, KEY[0], ~KEY[3], CLOCK_50, EBackgroundx); 
+    regn U5 (1'b1, KEY[0], KYS, CLOCK_50, EBackgroundx); //change KYS back to ~KEY[3]
         defparam U5.n = 1;
     backgroundCount U4 (CLOCK_50, KEY[0], EBackgroundy, Y_MAX, YB);    // row counter
         defparam U4.n = 7;
@@ -303,8 +303,9 @@ wire Resetn, start, gameover;
 	 
 
 	//DAUNTE TESTING
-    assign plot = ~KEY[3];
-
+    //assign plot = ~KEY[3];
+	 wire KYS = ((mode == 2'b10) & (Easy | Medium | Hard))|((mode == 2'b01) & start);
+	 assign plot = KYS;
 
     // connect to VGA controller
     vga_adapter VGA (
@@ -313,7 +314,7 @@ wire Resetn, start, gameover;
 			.colour(VGA_COLOR),
 			.x(VGA_X),
 			.y(VGA_Y),
-			.plot(~KEY[3]),//change back to ~KEY[3]
+			.plot(KYS),//change back to ~KEY[3]
 			.VGA_R(VGA_R),
 			.VGA_G(VGA_G),
 			.VGA_B(VGA_B),
