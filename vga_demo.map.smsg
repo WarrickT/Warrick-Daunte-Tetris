@@ -1,0 +1,2 @@
+Info (10281): Verilog HDL Declaration information at fsm_screen.v(6): object "y" differs only in case from object "Y" in the same scope File: W:/ECE241Final/testStationary/testStationary/fsm_screen.v Line: 6
+Info (10281): Verilog HDL Declaration information at fsm_home.v(7): object "y" differs only in case from object "Y" in the same scope File: W:/ECE241Final/testStationary/testStationary/fsm_home.v Line: 7
