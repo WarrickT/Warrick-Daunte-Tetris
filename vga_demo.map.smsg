@@ -1,0 +1,1 @@
+Warning (10268): Verilog HDL information at vga_demo.sv(323): always construct contains both blocking and non-blocking assignments File: C:/blockMovement/draw_FSM_move/vga_demo.sv Line: 323

@@ -1,0 +1,25 @@
+module getColor(Shape, MSB, Color);
+	input [3:0] Shape;
+	input MSB;
+	output reg [3:0] Color;
+	
+	
+	always @(*)
+		case(Shape)
+			4'b0000: Color = (MSB == 1) ? 3'b011 : 3'b000;
+			4'b0001: Color;
+			4'b0010: Color ;
+			4'b0011: ;
+			4'b0100: ;
+			4'b0101: ;
+			4'b0110: ;
+			4'b0111: ;
+			4'b1000: ;
+			4'b1001: ;
+			4'b1010: ;
+			4'b1011: ;
+			4'b1100: ;
+			4'b1101: ;
+			4'b1110: ;
+			default: currentConfig = J2;
+		

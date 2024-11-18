@@ -1,0 +1,5 @@
+module chooseConfigurationMux(I1, I2, O, S1, S2, J1, J2, J3, J4, T1, T2, T3, T4, Z1, Z2, Switch);
+	input [15:0] I1, I2, O, S1, S2, J1, J2, J3, J4, T1, T2, T3, T4, Z1, Z2;
+	input [3:0] Switch;
+	//Bound to change!
+	

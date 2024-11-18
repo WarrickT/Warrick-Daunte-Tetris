@@ -1,0 +1,11 @@
+/*module gameLogicFSM(XB, YB, changeBlock, canRight, canLeft, canRotate, 
+			LXB, LYB, EXB, EYB, EXCOOR, EYCOOR, LBoard, EBoard, LShift, EShift, Ex, Ey, Er, ACTION);
+		
+	input [3:0] XB, YB;
+	input [2:0] changeBlock;
+	input canRight, canLeft, canDown, canRotate;
+	
+	output reg LXB, LYB, EXB, EYB, EXCOOR, EYCOOR, ACTION, LBoard, EBoard, LShift, EShift, Ex, Ey, Er;
+	
+	parameter 
+	*/
