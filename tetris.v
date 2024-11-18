@@ -130,7 +130,7 @@ Hexadecimal_To_Seven_Segment Segment1 (
  wire easySecEn, mediumSecEn, hardSecEn, adjustSecEn;
  reg secEn;
  
- wire enable, switchblock;
+ //wire enable, switchblock;
  
  //assignments
  assign Resetn = KEY[0];
@@ -180,7 +180,7 @@ Hexadecimal_To_Seven_Segment Segment1 (
  
  always @(posedge CLOCK_50)
  case(difdisplay)
-	2'b00: secEn <= easySecEn; // 
+	2'b00: secEn <= easySecEn;  
 	2'b01: secEn <= mediumSecEn;
 	2'b10: secEn <= hardSecEn;
 	default: secEn = 1'b0;
@@ -192,7 +192,7 @@ Hexadecimal_To_Seven_Segment Segment1 (
  
  FSM_Home Home(mode, Easy, Medium, Hard, Resetn, difdisplay, CLOCK_50);
  
- FSM_Gameplay Gameplay(secEn, adjustSecEn, enable, switchblock, mode, left, down, right, rotate, Resetn, changeblock, CLOCK_50);
+ FSM_Gameplay Gameplay(secEn, adjustSecEn, mode, left, down, right, rotate, Resetn, changeblock, CLOCK_50);
  
  //testing
  /*assign LEDR[0] = mode[1];
