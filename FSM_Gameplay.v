@@ -142,7 +142,7 @@ module FSM_Gameplay(SecEn, adjustSecEn, mode, left, down, right, rotate, Resetn,
 			y <= Y;
 	
 	//These are the output statements
-	//NotPlay = 0000, Nothing = 0001, Drop = 0010, Left = 0011, Right = 0100, Down = 0101, Rotate(CW) = 0110
+	//NotPlay = 0000, Nothing = 0001, Drop = 0010, Left = 0011, Right = 0100, Down = 0101, Rotate(CW) = 0110, rest doesn't matter
 	assign changeblock[0] = (y == Nothing)|(y == Left_)|(y == Down_)|(y == Leftwait)|(y == Downwait);
 	assign changeblock[1] = (y == Drop)|(y == Left_)|(y == Rotate_)|(y == Leftwait)|(y == Rotatewait);
 	assign changeblock[2] = (y == Right_)|(y == Down_)|(y == Rotate_)|(y == Leftwait);
