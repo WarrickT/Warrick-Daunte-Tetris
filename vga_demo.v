@@ -194,19 +194,23 @@ wire Resetn, start, gameover;
  
  FSM_Home Home(mode, Easy, Medium, Hard, Resetn, difdisplay, CLOCK_50);
  
+ //FSM_Gameplay Gameplay(secEn, adjustSecEn, mode, left, down, right, rotate, Resetn, changeblock, CLOCK_50);
+ 
  //mode 2'b10 = homescreen
  //mode 2'b01 = gameplay
  //mode 2'b00 = endscreen
  //difdisplay 2'b00 = easy
  //difdisplay 2'b01 = medium
  //difdisplay 2'b10 = hard
- wire [1:0] screenDisplay;
- //slow = 00
- //normal = 01
- //fast == 10
- //gamescreen == 11
+ wire [2:0] screenDisplay;
+ //slow = 000
+ //normal = 001
+ //fast == 010
+ //gamescreen == 011
+
  assign screenDisplay[0] = ((mode == 2'b10) & (difdisplay == 2'b01))|(mode == 2'b01);
  assign screenDisplay[1] = ((mode == 2'b10) & (difdisplay == 2'b10))|(mode == 2'b01);
+ assign screenDisplay[2] = (mode == 2'b00); 
  
  assign LEDR[0] = (mode == 2'b10);
  assign LEDR[1] = (mode == 2'b01);
@@ -214,6 +218,7 @@ wire Resetn, start, gameover;
  assign LEDR[3] = (difdisplay == 2'b00);
  assign LEDR[4] = (difdisplay == 2'b01);
  assign LEDR[5] = (difdisplay == 2'b10);
+ assign LEDR[6] = KES;
 
 
 //end of Daunte code
@@ -270,12 +275,14 @@ wire Resetn, start, gameover;
 	 wire [2:0] NORMAL_COLOR;
 	 wire [2:0] HARD_COLOR;
 	 wire [2:0] GAME_COLOR;
+	 wire [2:0] OVER_COLOUR;
 	 
 	 
 	 SlowSelected slowScreen(160*YB + XB, CLOCK_50, SLOW_COLOR);
 	 NormalSelected normalScreen(160*YB + XB, CLOCK_50, NORMAL_COLOR);
 	 FastSelected fastScreen(160*YB + XB, CLOCK_50, HARD_COLOR);
 	 GameScreen gameScreen(160*YB + XB, CLOCK_50, GAME_COLOR);
+	 GameOver gameOverScreen(160*YB + XB, CLOCK_50, OVER_COLOUR);
 	 
 	 
 	 regn U1 (7'b0000000, KEY[0], ~KEY[1], CLOCK_50, Y);
@@ -286,7 +293,7 @@ wire Resetn, start, gameover;
 	 backgroundCount U3 (CLOCK_50, KEY[0], EBackgroundx, X_MAX, XB);    // column counter
         defparam U3.n = 8;
     // enable XC when VGA plotting starts
-	regn U5 (1'b1, KEY[0], KES, CLOCK_50, EBackgroundx); //change KES back to ~KEY[3]
+    regn U5 (1'b1, KEY[0], KES, CLOCK_50, EBackgroundx); //change KES back to ~KEY[3]
         defparam U5.n = 1;
     backgroundCount U4 (CLOCK_50, KEY[0], EBackgroundy, Y_MAX, YB);    // row counter
         defparam U4.n = 7;
@@ -294,7 +301,7 @@ wire Resetn, start, gameover;
     assign EBackgroundy = (XB == 8'b10011111);
 	 
 	 
-	 chooseBackgroundMux M1(SLOW_COLOR, NORMAL_COLOR, HARD_COLOR, GAME_COLOR, screenDisplay, VGA_COLOR); //FROM DAUNTE, change SW[9:8] to screenDisplay
+	 chooseBackgroundMux M1(SLOW_COLOR, NORMAL_COLOR, HARD_COLOR, GAME_COLOR, OVER_COLOUR, screenDisplay, VGA_COLOR); //FROM DAUNTE, change SW[9:8] to screenDisplay
 	 
 	  regn U7 (XB, KEY[0], 1'b1, CLOCK_50, VGA_X);
         defparam U7.n = 8;
@@ -304,7 +311,7 @@ wire Resetn, start, gameover;
 
 	//DAUNTE TESTING
     //assign plot = ~KEY[3];
-	 wire KES = ((mode == 2'b10) & (Easy | Medium | Hard))|((mode == 2'b01) & start);
+	 wire KES = ((mode == 2'b10) & (Easy | Medium | Hard))|((mode == 2'b01) & start)|((mode == 2'b00) & gameover)|~Resetn;
 	 assign plot = KES;
 
     // connect to VGA controller
@@ -314,7 +321,7 @@ wire Resetn, start, gameover;
 			.colour(VGA_COLOR),
 			.x(VGA_X),
 			.y(VGA_Y),
-	   		.plot(KES),//change back to ~KEY[3]
+			.plot(KES),//change back to ~KEY[3]
 			.VGA_R(VGA_R),
 			.VGA_G(VGA_G),
 			.VGA_B(VGA_B),
@@ -326,7 +333,7 @@ wire Resetn, start, gameover;
 		defparam VGA.RESOLUTION = "160x120";
 		defparam VGA.MONOCHROME = "FALSE";
 		defparam VGA.BITS_PER_COLOUR_CHANNEL = 1;
-		defparam VGA.BACKGROUND_IMAGE = "GameScreen.mif";
+		defparam VGA.BACKGROUND_IMAGE = "black.mif";
 endmodule
 
 module regn(R, Resetn, E, Clock, Q);
@@ -423,21 +430,25 @@ module chooseBlockMux (A, B, C, D, S, Out);
 		end
 endmodule
 
-module chooseBackgroundMux(A, B, C, D, S, Out);
-	input [2:0] A, B, C, D;
-	input [1:0] S;
+module chooseBackgroundMux(A, B, C, D, E, S, Out); //CHANGING HERE (added E, S is 3b)
+	input [2:0] A, B, C, D, E;
+	input [2:0] S;
 	output reg [2:0] Out;
 	
 	always@(*)
 		begin
-		if(S == 2'b00)
+		if(S == 3'b000)
 			Out = A;
-		else if(S == 2'b01)
+		else if(S == 3'b001)
 			Out = B;
-		else if(S == 2'b10)
+		else if(S == 3'b010)
 			Out = C;
-		else
+		else if (S == 3'b011)
 			Out = D;
+		else if (S == 3'b100)
+			Out = E;
+		else 
+			Out = 3'bxxx;
 		end
 endmodule
 	
@@ -460,5 +471,4 @@ endmodule
 	
 
 
-	
 	
