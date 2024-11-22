@@ -1,0 +1,13 @@
+module moveYCoor(XCoor, YCoor, L, E, XOut, YOut, Resetn);
+	input [7:0] XCoor;
+	input [6:0] YCoor;
+	input L, E, Resetn;
+	
+	output reg [7:0] XOut;
+	output reg [6:0] YOut;
+	
+endmodule
+
+
+
+	
