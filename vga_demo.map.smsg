@@ -1,0 +1,5 @@
+Info (10281): Verilog HDL Declaration information at FSM_screen.v(6): object "y" differs only in case from object "Y" in the same scope File: C:/2-Player-Tetris-Friday/2-Player-Tetris-Friday/FSM_screen.v Line: 6
+Info (10281): Verilog HDL Declaration information at FSM_Home.v(7): object "y" differs only in case from object "Y" in the same scope File: C:/2-Player-Tetris-Friday/2-Player-Tetris-Friday/FSM_Home.v Line: 7
+Warning (10268): Verilog HDL information at vga_demo.sv(329): always construct contains both blocking and non-blocking assignments File: C:/2-Player-Tetris-Friday/2-Player-Tetris-Friday/vga_demo.sv Line: 329
+Warning (10268): Verilog HDL information at vga_demo.sv(337): always construct contains both blocking and non-blocking assignments File: C:/2-Player-Tetris-Friday/2-Player-Tetris-Friday/vga_demo.sv Line: 337
+Info (10281): Verilog HDL Declaration information at fsm_gameplay.v(8): object "y" differs only in case from object "Y" in the same scope File: C:/2-Player-Tetris-Friday/2-Player-Tetris-Friday/fsm_gameplay.v Line: 8
