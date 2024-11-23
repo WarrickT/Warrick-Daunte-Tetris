@@ -1,0 +1,105 @@
+module drawBlockFSM(CLOCK_50, Resetn, go, sync, colour, X, Y, XC, YC, slow, Done, changeBlock, canDown
+	Ex, Ey, Lxc, Lyc, Exc, Eyc, LCounter, ECounter, ResetXDir, finishedDrawing, TDrop, newBlock, checkBoard
+);
+
+	//Statement Machine States
+	parameter A = 4'b0000, GETDATA = 4'b1000, GETDATA2 = 4'b1001, B = 4'b0001, C = 4'b0010, D = 4'b0011, CHECKDROP = 4'b1010;
+    parameter E = 4'b0100, F = 4'b0101, G = 4'b0110, H = 4'b0111; 
+	
+	parameter XSCREEN = 160, YSCREEN = 120;
+	 parameter YSTOP = 104;
+    parameter XDIM = 16, YDIM = 16;
+    parameter X0 = 8'd39, Y0 = 7'd40;
+    parameter ALT = 3'b000; // alternate object color
+    parameter K = 2; // animation speed: use 20 for hardware, 2 for ModelSim
+
+	input CLOCK_50;
+	input go, sync;
+	input Resetn;
+	input [2:0] colour;
+	input [7:0] X;
+	input [6:0] Y;
+    input [3:0] XC;
+    input [3:0] YC;
+    input [K-1:0] slow;
+	input Done;
+	input [3:0] changeBlock;
+	input canDown;
+	
+	output reg Ex, Ey, Lxc, Lyc, Exc, Eyc;
+	output reg LCounter, ECounter, ResetXDir, finishedDrawing;
+	output reg TDrop, newBlock;
+	output reg checkBoard;
+	
+	reg [3:0] y_Q, Y_D;
+
+	// FSM state table
+    always @ (*)
+        case (y_Q)
+            A:  if (!go || !sync) Y_D = A;
+                else Y_D = GETDATA;
+				GETDATA: Y_D = B;
+            B:  if (XC != XDIM-1) Y_D = GETDATA;    // draw
+                else Y_D = C;
+            C:  if (YC != YDIM-1) Y_D = GETDATA;
+                else 
+						if(!canDown)
+							Y_D = A;
+						else
+							Y_D = D;
+            D:	begin  
+						if(Y == YSTOP) Y_D = A;
+						else 
+							if(!Done) Y_D = D; //accounts for delay AND completion of backend. Need some kind of variable to account for delay!
+							else Y_D = CHECKDROP;
+					end //might be excessive
+				CHECKDROP: 
+					Y_D = GETDATA2;
+				GETDATA2: Y_D = E;
+            E:  if (XC != XDIM-1) Y_D = GETDATA2;    // erase
+                else Y_D = F;
+            F:  if (YC != YDIM-1) Y_D = GETDATA2;
+                else Y_D = G;
+            G:  Y_D = H;
+            H:  Y_D = B;
+        endcase
+    // FSM outputs
+    always @ (*)
+		 begin
+			  //Pixel Drawing
+			  Lxc = 1'b0; Lyc = 1'b0; Exc = 1'b0; Eyc = 1'b0; VGA_COLOR = colour; plot = 1'b0;
+			  //Position of Tetris Block
+			  Ex = 1'b0; Ey = 1'b0; ResetXDir = 0; 
+			  //Delay
+			  LCounter = 1'b1; ECounter = 1'b0; 
+			  //Backend checking 
+			  checkBoard = 1'b0; finishedDrawing = 1'b0;
+			  newBlock = 1'b0;
+			  case (y_Q)
+					A:  begin Lxc = 1'b1; Lyc = 1'b1; finishedDrawing = (canDown == 0); newBlock = 1'b1; end
+					B:  begin Exc = 1'b1; plot = (colour != 3'b000); ResetXDir = 1'b1; end   // color a pixel
+					C:  begin Lxc = 1'b1; Eyc = 1'b1; end 
+					//waitInput: Lyc = 1'b1; LCounter = 1'b0; ECounter = 1'b1
+					//Drop: checkBoard = 1'b1; Drop = 1'b1;
+					//Left: checkBoard = 1'b1; Left = 1'b1;
+					//Right: checkBoard = 1'b1; Right = 1'b1;
+					//Rotate: checkBoard = 1'b1; Rotate = 1'b1;
+					D:  begin Lyc = 1'b1; LCounter = 1'b0; ECounter = 1'b1; checkBoard = 1'b1; end//checkBoard = 1'b1; end
+					E:  begin Exc = 1'b1; VGA_COLOR = ALT; plot = (colour != 3'b000); end   // color a pixel Thi
+					F:  begin Lxc = 1'b1; Eyc = 1'b1; end
+					G:  begin Lyc = 1'b1; end
+					H:  begin Ey = (YDir == 1); end
+			  endcase
+		 end
+
+    always @(posedge CLOCK_50)
+        if (Resetn)
+            y_Q <= 1'b0;
+        else
+            y_Q <= Y_D;
+
+
+
+	endmodule
+	
+	
